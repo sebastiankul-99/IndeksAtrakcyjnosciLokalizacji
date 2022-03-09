@@ -95,14 +95,14 @@ def merge_data(dataFrames, _on = ['id','area','year'], drop = ['id']):
         drop (list, optional): list of columns to drop. Defaults to ['id'].
 
     Returns:
-        list: If successful returns merged dataframe otherwise returns received list of dataframes
+        list: If successful returns merged dataframe otherwise returns empty list
     """
     data = dataFrames
     try:
         data = reduce(lambda df1,df2: pd.merge(df1,df2,on= _on), dataFrames)
     except Exception: 
         print("Couldn't merge data frames")
-        return data
+        return []
     
     try:
         data=data.drop(columns = drop)
@@ -111,3 +111,34 @@ def merge_data(dataFrames, _on = ['id','area','year'], drop = ['id']):
         return data
     
     return data
+
+
+def retrive_multiple_data(variables = [], new_column_names = [], unit_level= 5, years = [],  _on = ['id','area','year'], drop = ['id'] ):
+    """A function to retrive multiple data points from GUS API. The function merges data points into a single data frame.  
+
+    Args:
+        variables (list, optional): List of variables which represents data points. Defaults to [].
+        new_column_names (list, optional):  A list of new names for the data columns. Defaults to [].
+        unit_level (int, optional): unit_level represents the level of validity of data. Defaults to 5.
+        years (list, optional): A list of all years of validity. Defaults to [2020].
+        _on (list, optional): list of columns to merge on. Defaults to ['id','area','year'].
+        drop (list, optional): list of columns to drop. Defaults to ['id'].
+
+    Returns:
+        pandas.DataFrame: returns pandas.DataFrame if successful, otherwise returns an empty list
+    """
+    if len(variables) != len(new_column_names):
+        print("The number of column names must match the number of variables")
+        return []
+    dataFrames = []
+    for index in range(len(variables)):
+        frame = get_whole_data(variables[index], unit_level, years, new_column_names[index])
+        if type(frame) is not list:
+            dataFrames.append(frame)
+        else:
+            print("Couldn't retrive data for variable ", str(variables[index]))
+    
+    data = merge_data(dataFrames, _on =_on, drop = drop)
+    return data
+    
+          
