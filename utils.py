@@ -87,15 +87,15 @@ def get_whole_data(variable = None, unit_level= 5,years = [] , newColumnName = "
     return appended_data
 
 def merge_data(dataFrames, _on = ['id','area','year'], drop = ['id']):
-    """_summary_
-
+    """A function to merged data from a list of dataframes. Designed to work with data retrieved from GUS API.
+         https://api.stat.gov.pl/Home/BdlApi?lang=en 
     Args:
         dataFrames (list): list of pandas.DataFrame
         _on (list, optional): list of columns to merge on. Defaults to ['id','area','year'].
         drop (list, optional): list of columns to drop. Defaults to ['id'].
 
     Returns:
-        list: If successful returns merged dataframe otherwise return received list of dataframes
+        list: If successful returns merged dataframe otherwise returns received list of dataframes
     """
     data = dataFrames
     try:
